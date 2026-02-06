@@ -7,13 +7,14 @@ import { useDispatch, useSelector } from 'react-redux';
 function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
-    const [addedToCart, setAddedToCart] = useState({}); // State to keep track of added plants
-    const [isAdded, setIsAdded] = useState(false);
-
     const dispatch = useDispatch();
 
     const cartItems = useSelector(state => state.cart.items);
-
+    
+    const isPlantInCart = (plantName) => { 
+        return cartItems.some(item => item.name === plantName);
+    };    
+    
     const plantsArray = [
         {
             category: "Air Purifying Plants",
@@ -265,11 +266,7 @@ function ProductList({ onHomeClick }) {
     const handleAddToCart = (plant) => {
 
         dispatch(addItem(plant));
-        
-        setAddedToCart((prevState) => ({
-            ...prevState,
-            [plant.name]: true
-        }))
+
     }
 
     return (
@@ -310,15 +307,15 @@ function ProductList({ onHomeClick }) {
                                         <div className='product-cost'><p>{plant.cost}</p></div>
                                         <button
                                             onClick={() => handleAddToCart(plant)}
-                                            disabled={addedToCart[plant.name]} // Disable the button if the plant is already added to the cart
+                                            disabled={isPlantInCart(plant.name)} // Disable the button if the plant is already added to the cart
                                             style={{
                                                 padding: '10px 15px',
-                                                backgroundColor: addedToCart[plant.name] ? 'gray' : 'blue',
+                                                backgroundColor: isPlantInCart(plant.name) ? 'gray' : 'blue',
                                                 color: 'white',
-                                                cursor: addedToCart[plant.name] ? 'not-allowed' : 'pointer',
+                                                cursor: isPlantInCart(plant.name) ? 'not-allowed' : 'pointer',
                                             }}
                                         >
-                                            {addedToCart[plant.name] ? 'Added to Cart' : 'Add to Cart'}
+                                            Add To Cart
                                         </button>
 
                                     </div>
