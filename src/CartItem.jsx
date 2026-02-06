@@ -7,6 +7,7 @@ const CartItem = ({ onContinueShopping }) => {
   const cart = useSelector(state => state.cart.items);
   const dispatch = useDispatch();
 
+
   // Calculate total amount for all products in the cart
   const calculateTotalAmount = () => {    
     let total = 0;
@@ -21,9 +22,7 @@ const CartItem = ({ onContinueShopping }) => {
     onContinueShopping();
   };
 
-  const handleIncrement = (item) => {
-    console.log('HandleIncrementCalled: ', handleIncrement, item);
-  
+  const handleIncrement = (item) => {  
     dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
   };
 
