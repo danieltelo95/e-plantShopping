@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import './ProductList.css'
 import CartItem from './CartItem';
-import { addItem } from './actions/cartActions';
+import { addItem } from './CartSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
-    const [addedToCard, setAddedToCart] = useState({}); // State to keep track of added plants
+    const [addedToCart, setAddedToCart] = useState({}); // State to keep track of added plants
+    const [isAdded, setIsAdded] = useState(false);
+
+    const dispatch = useDispatch();
+
+    const cartItems = useSelector(state => state.cart.items);
 
     const plantsArray = [
         {
@@ -252,20 +258,20 @@ function ProductList({ onHomeClick }) {
     };
 
     const handleContinueShopping = (e) => {
-        e.preventDefault();
+
         setShowCart(false);
     };
 
     const handleAddToCart = (plant) => {
-        dispatchEvent(addItem(prodcut));
 
+        dispatch(addItem(plant));
+        
         setAddedToCart((prevState) => ({
             ...prevState,
             [plant.name]: true
         }))
     }
-    
-    
+
     return (
         <div>
             <div className="navbar" style={styleObj}>
@@ -303,9 +309,18 @@ function ProductList({ onHomeClick }) {
                                         <div className='product-description'><span>{plant.description}</span></div>
                                         <div className='product-cost'><p>{plant.cost}</p></div>
                                         <button
-                                            className='product-button'
                                             onClick={() => handleAddToCart(plant)}
-                                        >Add to Cart</button>
+                                            disabled={addedToCart[plant.name]} // Disable the button if the plant is already added to the cart
+                                            style={{
+                                                padding: '10px 15px',
+                                                backgroundColor: addedToCart[plant.name] ? 'gray' : 'blue',
+                                                color: 'white',
+                                                cursor: addedToCart[plant.name] ? 'not-allowed' : 'pointer',
+                                            }}
+                                        >
+                                            {addedToCart[plant.name] ? 'Added to Cart' : 'Add to Cart'}
+                                        </button>
+
                                     </div>
                                 ))}
                             </div>
